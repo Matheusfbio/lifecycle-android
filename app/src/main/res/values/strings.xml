@@ -6,4 +6,8 @@
 
         <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Voltar\n</string>
+    <string name="hello_first_fragment">Ola primeiro fragment</string>
+    <string name="next">Proximo\n</string>
+    <string name="increment">add\n\t\t\t</string>
 </resources>

@@ -1,26 +1,55 @@
-package com.br.lifecycle
+package com.br.lifecycle.presentation.counter
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.br.lifecycle.R
 import com.br.lifecycle.databinding.ActivityMainBinding
-import com.br.lifecycle.presentation.ViewModelFactory
-import com.br.lifecycle.presentation.counter.MainViewModel
+import com.br.lifecycle.domain.CounterRepository
+
+class MainViewModel(
+    private val repository: CounterRepository
+): ViewModel() {
+    val counter: LiveData<Int> = repository.getCounter()
+
+    var incrementBy = 1
+
+     fun increment(){
+         repository.incrementCounterBy(incrementBy)
+
+     }
+}
+
+//class NumberLiveData(initial: Int = 0): MutableLiveData<Int>(initial) {
+//     override fun onActive() {
+//          super.onActive()
+//          Log.d("MainViewModel", "onActive")
+//     }
+//
+//     override fun onInactive() {
+//          super.onInactive()
+//          Log.d("MainViewModel", "onInactive")
+//     }
+//
+//}
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var appBarConfiguration: AppBarConfiguration // Declare the variable here
 
-    private val viewModel by viewModels<MainViewModel> {
-        ViewModelFactory()
-    }
+    private val viewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -30,16 +59,13 @@ class MainActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
-//        viewModel.counter.observe(this) {
-//            counter -> binding.counter.text = counter.toString()
-//        }
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        val navController: NavController = findNavController(R.id.nav_host_fragment_content_main)
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
 
         binding.fab.setOnClickListener { view ->
-//            viewModel.increment()
+            viewModel.increment()
         }
     }
 
@@ -49,7 +75,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        return navController.navigateUp(appBarConfiguration)
+        return navController.navigateUp()
                 || super.onSupportNavigateUp()
     }
 }
